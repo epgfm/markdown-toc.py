@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-print("Hello")
+import sys
 
 def getRank(line):
     ''' (str) -> int
@@ -25,8 +25,9 @@ def getRank(line):
     return rank
 
 
+
 def makeTocEntry(line):
-    '''
+    ''' (str) -> str
     >>> makeTocEntry('lol')
     >>> makeTocEntry('# lol')
     '* lol'
@@ -47,6 +48,29 @@ def makeTocEntry(line):
     
 
 
+def makeStub(line):
+    ''' (str) -> str
+    >>> makeStub('# lol')
+    'lol'
+    >>> makeStub('# 1 - lol')
+    '1-lol'
+    >>> makeStub('# 12 ! -- lol')
+    '12-lol'
+    >>> makeStub('# 1+ (around) - lol')
+    '1-around-lol'
+    '''
+    out = ''
+    prevIsAl = 0
+    for c in line:
+        if c.isalnum():
+            out += c
+            prevIsAl = 0
+        else:
+            prevIsAl += 1
+            if prevIsAl == 1:
+                out += '-'
+    return out.strip("-")
+
 
 
 def parseLine(line, doc, toc):
@@ -56,23 +80,36 @@ def parseLine(line, doc, toc):
     and toc (representing the table of content).
 
     >>> doc, toc, l = [], [], 'lol\\n';parseLine(l, doc, toc); doc, toc
-    (['lol\\n'], [])
+    (['lol'], [])
     >>> parseLine('#yo\\n', doc, toc); doc, toc
-    (['lol\\n', '#yo\\n'], ['* yo\\n'])
+    (['lol', "<a name='yo'></a>", '#yo'], ['* yo'])
+    >>> parseLine('## 2 -?y\\n', doc, toc); doc, toc
+    (['lol', "<a name='yo'></a>", '#yo', "<a name='2-y'></a>", '## 2 -?y'], ['* yo', '    + 2 -?y'])
     '''
-    doc.append(line)
     tocE = makeTocEntry(line)
     if tocE != None:
-        toc.append(tocE)
+        toc.append(tocE.rstrip())
+        doc.append("<a name='" + makeStub(line) + "'></a>")
+    doc.append(line.rstrip())
+    
 
 if __name__ == '__main__':
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("-t", "--test", action = 'store_true')
+    p.add_argument("file", nargs = '?', default = '-')
     args = p.parse_args()
 
     if args.test:
         import doctest
         doctest.testmod(verbose = True)
 
-
+    elif args.file:
+        with args.file == '-' and sys.stdin or open(args.file) as f:
+            doc, toc = [], []
+            for line in f:
+                parseLine(line, doc, toc)
+            for line in toc:
+                print(line)
+            for line in doc:
+                print(line)
