@@ -42,13 +42,17 @@ git clone https://github.com/epgfm/markdown-toc.py
 cd markdown-toc.py
 ```
 
-
+- Run tests
 ```bash
-
+./markdown-toc.py -t
 ```
 
-```
+- Simple usage, output to file
+```bash
+./markdown-toc.py README.md > READMYTOC.md
 ```
 
+- Read input from STDIN
 ```
+cat README.md | ./markdown-toc.py -
 ```
