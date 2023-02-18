@@ -19,3 +19,24 @@ Here are the tech specs:
 
 ### Can be tested using the repo's README.md file.
 
+## Usage
+
+```bash
+git clone https://github.com/epgfm/markdown-toc.py
+cd markdown-toc.py
+```
+
+- Run tests
+```bash
+./markdown-toc.py -t
+```
+
+- Simple usage, output to file
+```bash
+./markdown-toc.py README.md > REDMYTOC.md
+```
+
+- Read input from STDIN
+```
+cat README.md | ./markdown-toc.py - 
+```

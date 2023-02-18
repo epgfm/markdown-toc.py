@@ -30,19 +30,19 @@ def makeTocEntry(line):
     ''' (str) -> str
     >>> makeTocEntry('lol')
     >>> makeTocEntry('# lol')
-    '* lol'
+    "* <a href='#lol'>lol</a>"
     >>> makeTocEntry('## lolw')
-    '    + lolw'
+    "    + <a href='#lolw'>lolw</a>"
     >>> makeTocEntry('### lolwhat')
-    '        - lolwhat'
+    "        - <a href='#lolwhat'>lolwhat</a>"
     >>> makeTocEntry('#### lolwhat')
-    '            * lolwhat'
+    "            * <a href='#lolwhat'>lolwhat</a>"
     '''
     bullets = ['*', '+', '-']
     rank = getRank(line)
     if rank == 0:
         return None
-    line = line[rank:].lstrip()
+    line = "<a href='#" + makeStub(line) + "'>" + line[rank:].strip() + "</a>"
     pad = ' ' * ((rank-1) * 4) + bullets[(rank-1) % 3] + ' '
     return pad + line
     
@@ -82,9 +82,9 @@ def parseLine(line, doc, toc):
     >>> doc, toc, l = [], [], 'lol\\n';parseLine(l, doc, toc); doc, toc
     (['lol'], [])
     >>> parseLine('#yo\\n', doc, toc); doc, toc
-    (['lol', "<a name='yo'></a>", '#yo'], ['* yo'])
+    (['lol', "<a name='yo'></a>", '#yo'], ["* <a href='#yo'>yo</a>"])
     >>> parseLine('## 2 -?y\\n', doc, toc); doc, toc
-    (['lol', "<a name='yo'></a>", '#yo', "<a name='2-y'></a>", '## 2 -?y'], ['* yo', '    + 2 -?y'])
+    (['lol', "<a name='yo'></a>", '#yo', "<a name='2-y'></a>", '## 2 -?y'], ["* <a href='#yo'>yo</a>", "    + <a href='#2-y'>2 -?y</a>"])
     '''
     tocE = makeTocEntry(line)
     if tocE != None:
