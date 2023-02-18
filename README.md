@@ -33,7 +33,7 @@ cd markdown-toc.py
 
 - Simple usage, output to file
 ```bash
-./markdown-toc.py README.md > REDMYTOC.md
+./markdown-toc.py README.md > READMYTOC.md
 ```
 
 - Read input from STDIN
